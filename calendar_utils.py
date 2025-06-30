@@ -7,13 +7,13 @@ from googleapiclient.discovery import build
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 TOKEN_PATH = 'token.json'  # Already generated during auth
 CALENDAR_ID = 'primary'    # Using your main calendar
-# Step 1: Authenticate and return calendar service
+# to authenticate and return calendar service
 def get_calendar_service():
     creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
     service = build('calendar', 'v3', credentials=creds)
     return service
 
-# Step 2: Find available time slots on a specific day
+#  To find available time slots on a specific day
 def get_free_slots(date: str, duration: int):
     service = get_calendar_service()
 
