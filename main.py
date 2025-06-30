@@ -8,7 +8,7 @@ import traceback
 app = FastAPI()
 
 
-# ----------------------------  Chat Model ----------------------------
+# Chat Model 
 class ChatRequest(BaseModel):
     message: str
 
@@ -20,10 +20,10 @@ def chat_agent(req: ChatRequest):
             "agent_scratchpad": [],
             "input": req.message
         }) 
-        print("🧾 Full result from agent_executor.invoke():", result)
+        print(" Full result from agent_executor.invoke():", result)
 
 
-        print("🔎 Agent result:", result)
+        print("Agent result:", result)
 
         # Handle different possible keys safely
         response_text = result.get("messages", ["No output"])[-1] if "messages" in result else result.get("output", " No valid agent output")
