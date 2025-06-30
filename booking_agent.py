@@ -7,14 +7,14 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.agents import create_tool_calling_agent
 from calendar_utils import get_free_slots, create_event
 
-# ---- LLM Setup ----
+# LLM Setup 
 llm = ChatGoogleGenerativeAI(
     model="gemini-pro",
     temperature=0.3,
     google_api_key=""
 )
 
-# ---- Tool Wrappers ----
+# Tool Wrappers 
 def check_availability_tool(date: str, duration: int = 30):
     slots = get_free_slots(date, duration)
     return str(slots)
@@ -23,7 +23,7 @@ def book_event_tool(start: str, end: str, summary="Meeting", description="Booked
     event = create_event(summary, description, start, end)
     return f"Booked: {event.get('htmlLink')}"
 
-# ---- LangChain Tool Definition ----
+# LangChain Tool Definition 
 tools = [
     Tool.from_function(
         func=check_availability_tool,
@@ -37,14 +37,14 @@ tools = [
     )
 ]
 
-# ---- AgentState for LangGraph ----
+#  AgentState for LangGraph 
 class AgentState(TypedDict):
     input: str
     agent_scratchpad: Annotated[List[str], "Tool call history"]
     messages: Annotated[List[str], "Chat history"]
     
 
-# ---- Agent Creation (No RunnableAgent) ----
+# Agent Creation 
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 prompt = ChatPromptTemplate.from_messages([
@@ -58,10 +58,10 @@ agent = create_tool_calling_agent(llm, tools, prompt=prompt)
 
 
 def run_agent(state: AgentState):
-    user_input = state["messages"][-1]  # latest user message
+    user_input = state["messages"][-1]  
     result = agent.invoke({
         "input": user_input,
-        "agent_scratchpad": state.get("agent_scratchpad", [])  # fixed key
+        "agent_scratchpad": state.get("agent_scratchpad", []) 
     })
 
     return {
@@ -72,7 +72,7 @@ def run_agent(state: AgentState):
 
 
 
-# ---- Build LangGraph ----
+# Build LangGraph 
 workflow = StateGraph(AgentState)
 workflow.add_node("agent", run_agent)
 workflow.set_entry_point("agent")
